@@ -1,0 +1,4 @@
+
+* These are my config files for my guix and emacs set up as well as the temple-os theme
+
+
