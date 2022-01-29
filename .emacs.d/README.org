@@ -1,0 +1,476 @@
+temple-os theme requires the font from [[https://github.com/rendello/templeos_font][temple-font]] it also requires the autothemer package.  Its the first draft of the theme so their may be color discrepancies 
+
+
+* Initial Start Up
+
+
+** Remove Scroolbar
+   #+begin_src emacs-lisp
+
+     (scroll-bar-mode -1)
+
+   #+end_src
+** Remove tool bar
+   #+begin_src emacs-lisp
+
+     (tool-bar-mode -1)
+
+
+   #+end_src
+** Remove tooltip mode
+   #+begin_src emacs-lisp
+
+     (tooltip-mode -1)
+
+   #+end_src
+** Add margin
+   #+begin_src emacs-lisp
+
+(set-fringe-mode 15)
+
+   #+end_src
+** Remove menu-bar
+   #+begin_src emacs-lisp
+
+(menu-bar-mode -1)
+
+   #+end_src
+** Auto update
+
+#+begin_src emacs-lisp
+(auto-revert-mode t)
+#+end_src
+** Show paren
+#+begin_src emacs-lisp
+
+
+(show-paren-mode t)
+
+#+end_src emacs-lisp
+** load-theme
+
+#+begin_src emacs-lisp
+
+(add-hook 'after-init-hook (lambda () (load-theme 'temple-os t)))
+  
+
+#+end_src
+** wrap around
+
+   #+begin_src emacs-lisp
+
+(toggle-truncate-lines nil)
+
+   #+end_src
+   
+
+* use-package
+** contacts package hosts
+   #+begin_src emacs-lisp
+
+
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+
+
+
+   #+end_src
+** Initializes packages
+   
+   #+begin_src emacs-lisp
+
+
+(package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+
+   #+end_src
+
+
+   
+* Packages
+** All the icons
+   #+begin_src emacs-lisp
+
+
+     (use-package all-the-icons
+       :ensure t
+       :if (display-graphic-p))
+
+   #+end_src
+** Magit
+   #+begin_src emacs-lisp
+
+
+     (use-package magit
+
+
+       :ensure t
+
+  
+
+       ; replace current window with magit
+       :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+       :config
+       :bind (("C-x g" . magit)))
+
+
+   #+end_src
+
+** Ivy
+
+Use ivy-occur to store ivy completion into a buffer keybinding: C-c C-o
+
+My favorite completion framework for files.  *TIP* use M-o for actions you can perform on files.
+*** Main Ivy Config
+    #+begin_src emacs-lisp
+
+
+(use-package ivy
+  :diminish                           ;; gets rid of bottom mode name
+  :ensure t
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map     ;; use key bindings during certain modes
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
+  :init
+  (ivy-mode 1)) ;; uses ivy mode and default key bindings such as +b
+
+
+
+    #+end_src
+*** Ivy Rich
+Adds rich descriptions to functions in minibuffer
+#+begin_src emacs-lisp
+
+(use-package ivy-rich
+  :ensure t
+  :init
+  (ivy-rich-mode 1))
+
+
+
+#+end_src
+
+** Ya-snipper
+
+#+begin_src emacs-lisp
+
+
+  (use-package yasnippet
+    :ensure t
+    :init
+    :config (use-package yasnippet-snippets
+              :ensure t)
+    (yas-reload-all))
+
+
+#+end_src
+
+These ar the hooks I have for each mode
+
+#+begin_src emacs-lisp
+
+       (add-hook 'org-mode-hook #'yas-minor-mode)
+       (add-hook 'org-roam-mode-hook 'yas-minor-mode)
+       (add-hook 'c++-mode-hook 'yas-minor-mode)
+       (add-hook 'c-mode 'yas-minor-mode)
+       (add-hook'emacs-lisp-mode-hook'yas-minor-mode)
+
+  ; comment
+
+#+end_src
+
+** Counsel
+   #+begin_src emacs-lisp
+
+(use-package counsel
+  :ensure t
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history)))
+
+   #+end_src
+
+** Vterm
+
+initial start
+
+#+begin_src emacs-lisp
+
+(setq initial-buffer-choice 'vterm)
+
+#+end_src
+
+Need libtool-bin, libtool, and  cmake, and other dependencies see Vterm documentation.  This is what I needed on Ubuntu
+
+Vterm is faster as its wriiten in C while term is in lisp
+
+#+begin_src emacs-lisp
+
+
+  (use-package vterm
+  :ensure t
+    :commands vterm
+    :config
+    ;;(setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")  ;; Set this to match your custom shell prompt
+    ;;(setq vterm-shell "zsh")                       ;; Set this to customize the shell to launch
+    (setq vterm-max-scrollback 10000))
+
+#+end_src
+
+** littering
+
+#+begin_src emacs-lisp
+
+
+
+#+end_src
+
+* Helpful
+
+Better help buffers plus counsel rebindings
+
+#+begin_src emacs-lisp
+
+  (use-package helpful
+    :ensure t
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+    :bind
+    ([remap describe-function] . counsel-describe-function)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-variable] . counsel-describe-variable)
+    ([remap describe-key] . helpful-key))
+
+
+#+end_src
+
+** Which key
+
+#+begin_src emacs-lisp
+
+(use-package which-key
+  :ensure t
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 1))     ;; delay before it pops up in sec
+
+#+end_src
+
+* Doom moodline
+
+Works well with all the icons
+
+#+begin_src emacs-lisp
+
+      (use-package doom-modeline
+        :ensure t
+        :init (setq doom-modeline-height 20)
+      (setq doom-modeline-hud nil)
+    (setq doom-modeline-major-mode-color-icon t)
+  (setq doom-modeline-minor-modes nil)
+
+        :hook (after-init . doom-modeline-mode))
+
+
+
+
+#+end_src
+
+* Org
+
+** Set up
+
+** General Set Up
+
+#+begin_src emacs-lisp
+
+
+  (use-package org
+    :ensure t
+    :hook (org-mode . mk/org-mode-setup)
+    :config
+    (setq org-ellipsis " ▾"
+          org-hide-emphasis-markers t)
+
+    (setq org-agenda-files
+          '("/mnt/c/Home/OrgAgenda/tasks.org"
+            "/mnt/c/Home/OrgAgenda/birthdays.org"
+            "/mnt/c/Home/OrgAgenda/Homework.org"
+            "/mnt/c/Home/OrgAgenda/Events.org")))
+
+
+
+   #+end_src
+   
+*** Org start up
+
+    Custom function for some org files cleaning and formating
+    
+    #+begin_src emacs-lisp
+
+(defun mk/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode nil)
+  (visual-line-mode nil))
+
+    #+end_src
+
+**** Custom Size
+    This inhibits org mode images not scaling
+    #+begin_src emacs-lisp
+
+
+
+(setq org-image-actual-width nil)
+
+
+
+    #+end_src
+
+
+
+
+    
+
+*** Org-bullets
+   #+begin_src emacs-lisp
+
+
+     (use-package org-bullets
+       :ensure t
+       :hook (org-mode . org-bullets-mode)
+       :custom (org-bullets-bullet-list '("♱" "⚉" "⚇" "⚉" "⚇" "⚉" "⚇")))
+
+
+   #+end_src
+
+
+
+
+
+      
+   
+** Org Babel
+   For setting up how emacs code block are evaluated and which can be evaulated. [[https://magit.vc/manual/magit/Stashing.html][magit]]
+   #+begin_src emacs-lisp
+
+          (with-eval-after-load 'org
+            (org-babel-do-load-languages
+                'org-babel-load-languages
+                '((emacs-lisp . t)
+                (python . t) (C . t)  (octave . t) (shell . t) (scheme . t)))
+
+            (push '("conf-unix" . conf-unix) org-src-lang-modes))
+     ; This makes sure no prompt sets up when we evaulute a src block
+     (setq org-confirm-babel-evaluate nil)
+
+   #+end_src
+*** Structure Templates
+    These let you use org temp and set custom auto completes for source blocks.
+    #+begin_src emacs-lisp
+
+            (with-eval-after-load 'org
+              ;; This is needed as of Org 9.2
+              (require 'org-tempo)
+
+              (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+              (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+              (add-to-list 'org-structure-template-alist '("py" . "src python"))
+      (add-to-list 'org-structure-template-alist '("cde" . "src C"))
+
+      (add-to-list 'org-structure-template-alist '("oct" . "src octave"))
+(add-to-list 'org-structure-template-alist '("guix" . "src scheme")))
+
+    #+end_src
+    
+* modus-themes
+
+Actually my favorite themes
+
+#+begin_src emacs-lisp :tangle no
+
+
+
+  (use-package modus-themes
+    :ensure t
+    :init
+    (setq modus-theme-italic-constructs t)
+    (setq modus-themes-deuteranopia nil)
+    (setq modus-themes-syntax '(alt-syntax green-strings yellow-comments))
+    (setq modus-themes-links '(background italic bold))
+    (setq modus-themes-prompts '(intense))
+    (setq modus-themes-mode-line ' (borderless 7))
+    (setq modus-themes-subtle-line-numbers t)
+    (setq modus-themes-paren-match '(intense bold underline))
+    (setq modus-themes-region '(bg-only no-extend))
+    (setq odus-themes-diffs '(bg-only))
+    (setq modus-themes-headings '((1 . (rainbow monochrome ultrabold variable-pitch 1.6 ))
+                                  (2 . (ultrabold variable-pitch 1.3))
+                                  (3 . (ultrabold))
+                                  (t . (rainbow))))
+    (modus-themes-load-themes)
+    :config
+    (modus-themes-load-vivendi)
+    :bind ("<f5>" . modus-themes-toggle)
+    )
+
+#+end_src
+
+[[fsdfsd][sdfsd]]
+
+
+* Themes
+
+#+begin_src emacs-lisp
+
+  (use-package autothemer
+    :ensure t)
+
+#+end_src
+
+* Custom src blocks
+Org blocks gets rid of text of end_src
+#+begin_src emacs-lisp :tangle no
+
+#+end_src
+
+#+RESULTS:
+
+* Lisp
+
+** Guiser
+
+I uses geiser and geiser scheme
+
+
+
+** Lispy
+
+#+begin_src emacs-lisp
+
+(require lispy)
+
+#+end_src
+
+* Test

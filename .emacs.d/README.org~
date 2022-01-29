@@ -1,0 +1,226 @@
+* Initial Start Up
+
+** Remove Scroolbar
+   #+begin_src emacs-lisp
+
+     (scroll-bar-mode -1)
+
+   #+end_src
+** Remove tool bar
+   #+begin_src emacs-lisp
+
+     (tool-bar-mode -1)
+
+
+   #+end_src
+** Remove tooltip mode
+   #+begin_src emacs-lisp
+
+     (tooltip-mode -1)
+
+   #+end_src
+** Add margin
+   #+begin_src emacs-lisp
+
+(set-fringe-mode 50)
+
+   #+end_src
+** Remove menu-bar
+   #+begin_src emacs-lisp
+
+(menu-bar-mode -1)
+
+   #+end_src
+** Auto update
+
+#+begin_src emacs-lisp
+(auto-revert-mode t)
+#+end_src
+
+* use-package
+** contacts package hosts
+   #+begin_src emacs-lisp
+
+
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+
+
+
+   #+end_src
+** Initializes packages
+   
+   #+begin_src emacs-lisp
+
+
+(package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+
+   #+end_src
+
+
+  
+* Packages
+
+** Ivy
+
+Use ivy-occur to store ivy completion into a buffer keybinding: C-c C-o
+
+My favorite completion framework for files.  *TIP* use M-o for actions you can perform on files.
+*** Main Ivy Config
+    #+begin_src emacs-lisp
+
+
+(use-package ivy
+  :diminish                           ;; gets rid of bottom mode name
+  :ensure t
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map     ;; use key bindings during certain modes
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
+  :init
+  (ivy-mode 1)) ;; uses ivy mode and default key bindings such as +b
+
+
+
+    #+end_src
+*** Ivy Rich
+Adds rich descriptions to functions in minibuffer
+#+begin_src emacs-lisp
+
+(use-package ivy-rich
+  :ensure t
+  :init
+  (ivy-rich-mode 1))
+
+
+#+end_src
+** Counsel
+   #+begin_src emacs-lisp
+
+(use-package counsel
+  :ensure t
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history)))
+
+   #+end_src
+
+** Vterm
+
+Need libtool-bin, libtool, and  cmake, and other dependencies see Vterm documentation.  This is what I needed on Ubuntu
+
+Vterm is faster as its wriiten in C while term is in lisp
+
+#+begin_src emacs-lisp
+
+
+  (use-package vterm
+  :ensure t
+    :commands vterm
+    :config
+    ;;(setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")  ;; Set this to match your custom shell prompt
+    ;;(setq vterm-shell "zsh")                       ;; Set this to customize the shell to launch
+    (setq vterm-max-scrollback 10000))
+
+#+end_src
+
+* Org
+** General Set Up
+#+begin_src emacs-lisp
+
+
+	  (use-package org
+	    :ensure t
+	      :hook (org-mode . mk/org-mode-setup)
+	    :config
+	    (setq org-ellipsis " ▾"
+		  org-hide-emphasis-markers t)
+
+	    (setq org-agenda-files
+	'("/mnt/c/Home/OrgAgenda/tasks.org"
+	  "/mnt/c/Home/OrgAgenda/birthdays.org"
+	  "/mnt/c/Home/OrgAgenda/Homework.org"
+	  "/mnt/c/Home/OrgAgenda/Events.org"))
+)
+
+
+   #+end_src
+** Org start up
+    Custom function for some org files cleaning and formating
+    #+begin_src emacs-lisp
+(defun mk/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode nil)
+  (visual-line-mode nil))
+
+    #+end_src
+
+*** Custom Size
+    This inhibits org mode images not scaling
+    #+begin_src emacs-lisp
+
+
+
+(setq org-image-actual-width nil)
+
+
+
+    #+end_src
+
+
+
+
+
+** Org-bullets
+   #+begin_src emacs-lisp
+
+
+     (use-package org-bullets
+       :ensure t
+       :hook (org-mode . org-bullets-mode)
+       :custom (org-bullets-bullet-list '("♱" "⚉" "⚇" "⚉" "⚇" "⚉" "⚇")))
+
+
+   #+end_src
+
+
+
+* modus-themes
+
+Actually my favorite themes
+
+#+begin_src emacs-lisp
+
+
+
+             (use-package modus-themes
+         :ensure t
+:init
+       (setq modus-theme-italic-constructs t
+             )
+      (modus-themes-load-themes)
+    :config
+  (modus-themes-load-vivendi)
+:bind ("<f5>" . modus-themes-toggle)
+               )
+
+#+end_src

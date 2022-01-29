@@ -1,0 +1,18 @@
+(org-babel-load-file
+ (expand-file-name "README.org"
+  user-emacs-directory))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(lispy geiser-guile all-the-icons magit vterm modus-themes org-bullets use-package ivy-rich counsel)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-block ((t (:background "#2A2A2A" :extend t))))
+ '(org-block-begin-line ((t (:underline "#0F4D05" :foreground "#FFFFFF" :background "#393939" :extend t))))
+ '(org-block-end-line ((t (:overline "#0F4D05" :foreground "#393939" :background "#393939" :extend t)))))
