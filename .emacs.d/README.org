@@ -1,5 +1,39 @@
 temple-os theme requires the font from [[https://github.com/rendello/templeos_font][temple-font]] it also requires the autothemer package.  Its the first draft of the theme so their may be color discrepancies 
 
+* Straight
+
+#+begin_src emacs-lisp
+
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+      (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+        'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+#+end_src
+
+This installs use-package using straight
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'use-package)
+
+#+end_src
+
+Don't know what this does.
+
+#+begin_src emacs-lisp
+
+  (setq straight-use-package-by-default t)
+
+#+end_src
 
 * Initial Start Up
 
@@ -100,7 +134,7 @@ temple-os theme requires the font from [[https://github.com/rendello/templeos_fo
 
 
      (use-package all-the-icons
-       :ensure t
+       :straight t
        :if (display-graphic-p))
 
    #+end_src
@@ -111,7 +145,7 @@ temple-os theme requires the font from [[https://github.com/rendello/templeos_fo
      (use-package magit
 
 
-       :ensure t
+       :straight t
 
   
 
@@ -134,7 +168,7 @@ My favorite completion framework for files.  *TIP* use M-o for actions you can p
 
 (use-package ivy
   :diminish                           ;; gets rid of bottom mode name
-  :ensure t
+  :straight t
   :bind (("C-s" . swiper)
          :map ivy-minibuffer-map     ;; use key bindings during certain modes
          ("TAB" . ivy-alt-done)
@@ -159,7 +193,7 @@ Adds rich descriptions to functions in minibuffer
 #+begin_src emacs-lisp
 
 (use-package ivy-rich
-  :ensure t
+  :straight t
   :init
   (ivy-rich-mode 1))
 
@@ -173,10 +207,10 @@ Adds rich descriptions to functions in minibuffer
 
 
   (use-package yasnippet
-    :ensure t
+    :straight t
     :init
     :config (use-package yasnippet-snippets
-              :ensure t)
+              :straight t)
     (yas-reload-all))
 
 
@@ -200,7 +234,7 @@ These ar the hooks I have for each mode
    #+begin_src emacs-lisp
 
 (use-package counsel
-  :ensure t
+  :straight t
   :bind (("M-x" . counsel-M-x)
 	 ("C-x b" . counsel-ibuffer)
 	 ("C-x C-f" . counsel-find-file)
@@ -227,7 +261,7 @@ Vterm is faster as its wriiten in C while term is in lisp
 
 
   (use-package vterm
-  :ensure t
+  :straight t
     :commands vterm
     :config
     ;;(setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")  ;; Set this to match your custom shell prompt
@@ -251,7 +285,7 @@ Better help buffers plus counsel rebindings
 #+begin_src emacs-lisp
 
   (use-package helpful
-    :ensure t
+    :straight t
     :custom
     (counsel-describe-function-function #'helpful-callable)
     (counsel-describe-variable-function #'helpful-variable)
@@ -269,7 +303,7 @@ Better help buffers plus counsel rebindings
 #+begin_src emacs-lisp
 
 (use-package which-key
-  :ensure t
+  :straight t
   :init (which-key-mode)
   :diminish which-key-mode
   :config
@@ -284,7 +318,7 @@ Works well with all the icons
 #+begin_src emacs-lisp
 
       (use-package doom-modeline
-        :ensure t
+        :straight t
         :init (setq doom-modeline-height 20)
       (setq doom-modeline-hud nil)
     (setq doom-modeline-major-mode-color-icon t)
@@ -307,7 +341,7 @@ Works well with all the icons
 
 
   (use-package org
-    :ensure t
+    :straight t
     :hook (org-mode . mk/org-mode-setup)
     :config
     (setq org-ellipsis " ▾"
@@ -358,7 +392,7 @@ Works well with all the icons
 
 
      (use-package org-bullets
-       :ensure t
+       :straight t
        :hook (org-mode . org-bullets-mode)
        :custom (org-bullets-bullet-list '("♱" "⚉" "⚇" "⚉" "⚇" "⚉" "⚇")))
 
@@ -413,7 +447,7 @@ Actually my favorite themes
 
 
   (use-package modus-themes
-    :ensure t
+    :straight t
     :init
     (setq modus-theme-italic-constructs t)
     (setq modus-themes-deuteranopia nil)
@@ -445,7 +479,7 @@ Actually my favorite themes
 #+begin_src emacs-lisp
 
   (use-package autothemer
-    :ensure t)
+    :straight t)
 
 #+end_src
 

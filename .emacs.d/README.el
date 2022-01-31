@@ -1,3 +1,20 @@
+(defvar bootstrap-version)
+(let ((bootstrap-file
+      (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+        'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+
+(setq straight-use-package-by-default t)
+
 (scroll-bar-mode -1)
 
 (tool-bar-mode -1)
@@ -27,13 +44,13 @@
   (package-install 'use-package))
 
 (use-package all-the-icons
-  :ensure t
+  :straight t
   :if (display-graphic-p))
 
 (use-package magit
 
 
-  :ensure t
+  :straight t
 
 
 
@@ -44,7 +61,7 @@
 
 (use-package ivy
   :diminish                           ;; gets rid of bottom mode name
-  :ensure t
+  :straight t
   :bind (("C-s" . swiper)
          :map ivy-minibuffer-map     ;; use key bindings during certain modes
          ("TAB" . ivy-alt-done)
@@ -62,15 +79,15 @@
   (ivy-mode 1)) ;; uses ivy mode and default key bindings such as +b
 
 (use-package ivy-rich
-  :ensure t
+  :straight t
   :init
   (ivy-rich-mode 1))
 
 (use-package yasnippet
-  :ensure t
+  :straight t
   :init
   :config (use-package yasnippet-snippets
-            :ensure t)
+            :straight t)
   (yas-reload-all))
 
 (add-hook 'org-mode-hook #'yas-minor-mode)
@@ -82,7 +99,7 @@
 ; comment
 
 (use-package counsel
-  :ensure t
+  :straight t
   :bind (("M-x" . counsel-M-x)
 	 ("C-x b" . counsel-ibuffer)
 	 ("C-x C-f" . counsel-find-file)
@@ -92,7 +109,7 @@
 (setq initial-buffer-choice 'vterm)
 
 (use-package vterm
-:ensure t
+:straight t
   :commands vterm
   :config
   ;;(setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")  ;; Set this to match your custom shell prompt
@@ -102,7 +119,7 @@
 
 
 (use-package helpful
-  :ensure t
+  :straight t
   :custom
   (counsel-describe-function-function #'helpful-callable)
   (counsel-describe-variable-function #'helpful-variable)
@@ -113,14 +130,14 @@
   ([remap describe-key] . helpful-key))
 
 (use-package which-key
-  :ensure t
+  :straight t
   :init (which-key-mode)
   :diminish which-key-mode
   :config
   (setq which-key-idle-delay 1))     ;; delay before it pops up in sec
 
 (use-package doom-modeline
-      :ensure t
+      :straight t
       :init (setq doom-modeline-height 20)
     (setq doom-modeline-hud nil)
   (setq doom-modeline-major-mode-color-icon t)
@@ -129,7 +146,7 @@
       :hook (after-init . doom-modeline-mode))
 
 (use-package org
-  :ensure t
+  :straight t
   :hook (org-mode . mk/org-mode-setup)
   :config
   (setq org-ellipsis " ▾"
@@ -149,7 +166,7 @@
 (setq org-image-actual-width nil)
 
 (use-package org-bullets
-  :ensure t
+  :straight t
   :hook (org-mode . org-bullets-mode)
   :custom (org-bullets-bullet-list '("♱" "⚉" "⚇" "⚉" "⚇" "⚉" "⚇")))
 
@@ -176,6 +193,6 @@
 (add-to-list 'org-structure-template-alist '("guix" . "src scheme")))
 
 (use-package autothemer
-  :ensure t)
+  :straight t)
 
 (require lispy)
