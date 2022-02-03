@@ -341,7 +341,7 @@ Works well with all the icons
 
 
   (use-package org
-    :straight t
+    :ensure t
     :hook (org-mode . mk/org-mode-setup)
     :config
     (setq org-ellipsis " ▾"
@@ -584,3 +584,14 @@ Use `set-region-read-only' to set this property."
 #+end_src
 
 
+** Center of page
+
+#+begin_src emacs-lisp
+
+  (define-minor-mode mk/center-page-mode
+    "This is a minor mode that centers the page always"
+    :lighter center-mode
+
+    (recenter-top-bottom))
+
+#+end_src
