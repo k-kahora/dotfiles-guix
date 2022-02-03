@@ -483,29 +483,12 @@ Actually my favorite themes
 
 #+end_src
 
-* Custom src blocks
-Org blocks gets rid of text of end_src
-#+begin_src emacs-lisp :tangle no
-
-#+end_src
-
-#+RESULTS:
-
 * Lisp
 
 ** Guiser
 
 I uses geiser and geiser scheme
 
-
-
-** Lispy
-
-#+begin_src emacs-lisp
-
-(require lispy)
-
-#+end_src
 
 * Custom functions
 
