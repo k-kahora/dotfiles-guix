@@ -483,6 +483,7 @@ Actually my favorite themes
 
 #+end_src
 
+
 * Lisp
 
 ** Guiser
@@ -559,3 +560,27 @@ Use `set-region-read-only' to set this property."
     (set-buffer-modified-p modified)))
 
 #+end_src
+
+** Kill line
+
+#+begin_src emacs-lisp
+
+
+
+
+
+    (defun mk/kill-line (arg)
+      "This is my first elips function it kills the current working line"
+      (interactive "P")
+
+    (beginning-of-line-text arg)
+  (kill-visual-line arg)
+
+
+
+      )
+(global-set-key "\C-q" 'mk/kill-line)
+
+#+end_src
+
+
