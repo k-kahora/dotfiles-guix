@@ -75,9 +75,14 @@
 
 (secondary-selection (:background temple-white))
 
-; magit 
-(magit-section-highlight (:foreground temple-purple))
-(magit-branch-local (:foreground temple-yellow))
+					; magit
+(magit-section-heading (:foreground temple-yellow))
+(magit-filename (:foreground temple-dark-grey))
+(magit-diff-file-heading (:foreground temple-light-cyan))
+(git-rebase-action (:foreground temple-light-red))
+(magit-section-highlight (:foreground temple-red))
+(magit-branch-local (:foreground temple-purple))
+(magit-branch-remote (:foreground temple-green))
 (magit-hash (:foreground temple-white))
 (region (:background temple-brown ))
 
