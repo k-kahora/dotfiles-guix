@@ -31,18 +31,6 @@
 
 (toggle-truncate-lines nil)
 
-(require 'package)
-
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
-
-(package-initialize)
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
 (use-package all-the-icons
   :straight t
   :if (display-graphic-p))
@@ -58,6 +46,14 @@
   :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   :config
   :bind (("C-x g" . magit)))
+
+(use-package counsel
+  :straight t
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history)))
 
 (use-package ivy
   :diminish                           ;; gets rid of bottom mode name
@@ -97,14 +93,6 @@
      (add-hook'emacs-lisp-mode-hook'yas-minor-mode)
 
 ; comment
-
-(use-package counsel
-  :straight t
-  :bind (("M-x" . counsel-M-x)
-	 ("C-x b" . counsel-ibuffer)
-	 ("C-x C-f" . counsel-find-file)
-	 :map minibuffer-local-map
-	 ("C-r" . 'counsel-minibuffer-history)))
 
 (setq initial-buffer-choice 'vterm)
 
