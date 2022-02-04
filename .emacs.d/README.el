@@ -27,7 +27,7 @@
 
 (auto-revert-mode t)
 
-(add-hook 'after-init-hook (lambda () (load-theme 'temple-os t)))
+(add-hook 'after-init-hook (lambda () (load-theme     'gruber-darker t)))
 
 (toggle-truncate-lines nil)
 
@@ -181,6 +181,9 @@
 (add-to-list 'org-structure-template-alist '("guix" . "src scheme")))
 
 (use-package autothemer
+  :straight t)
+
+(use-package gruber-darker-theme
   :straight t)
 
 (defun run-in-vterm-kill (process event)

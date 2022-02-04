@@ -85,7 +85,7 @@ Don't know what this does.
 
 #+begin_src emacs-lisp
 
-(add-hook 'after-init-hook (lambda () (load-theme 'temple-os t)))
+  (add-hook 'after-init-hook (lambda () (load-theme     'gruber-darker t)))
   
 
 #+end_src
@@ -455,6 +455,16 @@ Actually my favorite themes
 
 #+end_src
 
+** Gruber-dark
+
+#+begin_src emacs-lisp
+
+
+(use-package gruber-darker-theme
+  :straight t)
+
+
+#+end_src
 
 * Lisp
 
