@@ -43,7 +43,7 @@
 
 (header-line (:background temple-blue :foreground temple-white))
 
-(mode-line-buffer-id (:foreground temple-blue :background temple-black))
+(mode-line-buffer-id (:foreground temple-blue :background temple-black :box(:line-width 4 :background temple-blue)))
 
 (mode-line (:foreground temple-black :background temple-blue :box (:line-width -4 :color temple-black )))
 
@@ -104,73 +104,73 @@
 
  ; all-the-icons
  (all-the-icons-dsilver
-  (:foreground temple-dark-grey))
+  (:foreground temple-black))
  (all-the-icons-lsilver
-  (:foreground temple-light-grey))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-silver
-  (:foreground temple-light-grey))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-dpink
-  (:foreground temple-red))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-lpink
-  (:foreground temple-light-red))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-pink
-  (:foreground temple-red))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-dcyan
-  (:foreground temple-cyan))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-lcyan
-  (:foreground temple-light-grey))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-cyan-alt
-  (:foreground temple-cyan))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-cyan
-  (:foreground temple-cyan))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-dorange
-  (:foreground temple-brown))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-lorange
-  (:foreground temple-brown))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-orange
-  (:foreground temple-brown))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-dpurple
-  (:foreground temple-purple))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-lpurple
-  (:foreground temple-light-purple))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-purple-alt
-  (:foreground temple-light-blue))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-purple
-  (:foreground temple-purple))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-dmaroon
-  (:foreground temple-red))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-lmaroon
-  (:foreground temple-light-red))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-maroon
-  (:foreground temple-red))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-dblue
-  (:foreground temple-blue))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-lblue
-  (:foreground temple-light-blue))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-blue-alt
-  (:foreground temple-cyan))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-blue
-  (:foreground temple-blue))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-dyellow
-  (:foreground temple-yellow))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-lyellow
-  (:foreground temple-yellow))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-yellow
-  (:foreground temple-yellow))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-dgreen
-  (:foreground temple-green))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-lgreen
-  (:foreground temple-yellow))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-green
-  (:foreground temple-green))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-red-alt
-  (:foreground temple-red))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-dred
-  (:foreground temple-red))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-lred
-  (:foreground temple-light-red))
+  (:inherit 'all-the-icons-dsilver))
  (all-the-icons-red
-  (:foreground temple-red))
+  (:inherit 'all-the-icons-dsilver))
 
 
  ; Ivy
