@@ -1,0 +1,5 @@
+#!/gnu/store/87kif0bpf0anwbsaw0jvg8fyciw4sz67-bash-5.0.16/bin/bash
+
+
+guix pull --channels=$HOME/.config/guix/my-channels.scm
+guix describe --format=channels > ~/.config/guix/channels.scm
