@@ -146,7 +146,7 @@
       :hook (after-init . doom-modeline-mode))
 
 (use-package org
-  :ensure t
+  :straight t
   :hook (org-mode . mk/org-mode-setup)
   :config
   (setq org-ellipsis " ▾"
