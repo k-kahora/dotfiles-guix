@@ -118,3 +118,11 @@ t
 (load-theme 'temple-os t)
 (load-theme 'temple-os t)
 (load-theme 'temple-os t)
+[1 2 (+ 9 8)]
+buffer-file-name
+other-buffer
+(switch-to-buffer (other-buffer))
+43
+[ 1 2 (+ 1 2) ]
+buffer-file-name
+(buffer-file-name)

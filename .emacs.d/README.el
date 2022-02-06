@@ -134,7 +134,7 @@
       :hook (after-init . doom-modeline-mode))
 
 (use-package org
-  :straight t
+  :ensure t
   :hook (org-mode . mk/org-mode-setup)
   :config
   (setq org-ellipsis " ▾"
@@ -259,3 +259,27 @@ Use `set-region-read-only' to set this property."
   :lighter center-mode
 
   (recenter-top-bottom))
+
+(defun efs/ielm-send-line-or-region ()
+  (interactive)
+  (unless (use-region-p)
+    (forward-line 0)
+    (set-mark-command nil)
+    (forward-line 1))
+  (backward-char 1)
+  (let ((text (buffer-substring-no-properties (region-beginning)
+                                              (region-end))))
+    (with-current-buffer "*ielm*"
+      (insert text)
+      (ielm-send-input))
+
+    (deactivate-mark)))
+
+(defun efs/show-ielm ()
+  (interactive)
+  (select-window (split-window-vertically -10))
+  (ielm)
+  (text-scale-set 1))
+
+(define-key org-mode-map (kbd "C-c C-e") 'efs/ielm-send-line-or-region)
+(define-key org-mode-map (kbd "C-c E") 'efs/show-ielm)
