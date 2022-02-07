@@ -254,6 +254,15 @@ Use `set-region-read-only' to set this property."
       )
 (global-set-key "\C-q" 'mk/kill-line)
 
+(defun mk/ssh-time ()
+  "This is my automating ssh into virtualbox script"
+  (interactive (list 
+
+  (run-in-vterm "ssh osc@192.168.56.101")
+    (find-file   "/ssh:osc@192.168.56.101:/")
+
+  )))
+
 (define-minor-mode mk/center-page-mode
   "This is a minor mode that centers the page always"
   :lighter center-mode
