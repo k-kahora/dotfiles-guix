@@ -292,3 +292,8 @@ Use `set-region-read-only' to set this property."
 
 (define-key org-mode-map (kbd "C-c C-e") 'efs/ielm-send-line-or-region)
 (define-key org-mode-map (kbd "C-c E") 'efs/show-ielm)
+
+(setq ispell-program-name "hunspell")
+(setq ispell-local-dictionary "de_DE")
+(setq ispell-local-dictionary-alist
+      '(("de_DE" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)))
