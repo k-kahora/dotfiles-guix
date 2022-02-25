@@ -31,6 +31,8 @@
 
 (toggle-truncate-lines nil)
 
+(set-register ?i (cons 'file "/home/malcolm/.dotfiles/.emacs.d/README.org"))
+
 (use-package all-the-icons
   :straight t
   :if (display-graphic-p))
@@ -89,8 +91,8 @@
 (add-hook 'org-mode-hook #'yas-minor-mode)
      (add-hook 'org-roam-mode-hook 'yas-minor-mode)
      (add-hook 'c++-mode-hook 'yas-minor-mode)
-     (add-hook 'c-mode 'yas-minor-mode)
-     (add-hook'emacs-lisp-mode-hook'yas-minor-mode)
+     (add-hook 'c-mode-hook 'yas-minor-mode)
+     (add-hook'emacs-lisp-mode-hook 'yas-minor-mode)
 
 ; comment
 
@@ -154,7 +156,7 @@
 (setq org-image-actual-width nil)
 
 (use-package org-bullets
-  :straight t
+  :ensure t
   :hook (org-mode . org-bullets-mode)
   :custom (org-bullets-bullet-list '("♱" "⚉" "⚇" "⚉" "⚇" "⚉" "⚇")))
 
@@ -180,11 +182,77 @@
       (add-to-list 'org-structure-template-alist '("oct" . "src octave"))
 (add-to-list 'org-structure-template-alist '("guix" . "src scheme")))
 
+(use-package org-roam
+        :ensure t
+        :init
+        (setq org-roam-v2-ack t)
+        :custom
+        (org-roam-directory "/mnt/c/Home/roamnotes")
+        (org-roam-completion-everywhere t)
+        (org-roam-capture-templates
+
+         ;; templates
+
+         '(("d" "default" plain
+            "%?"
+            :if-new (file+head "%<%y%m%d%h%m%s>-${slug}.org" "#+title: ${title}\n")
+            :unnarrowed t)
+
+         ("l" "programming language" plain
+          "* characteristics\n\n- family: \n- inspired by: \n\n* reference:\n* examples:%?"
+          :if-new (file+head "%<%y%m%d%h%m%s>-${slug}.org" "#+title: ${title}\n")
+          :unnarrowed t)
+
+         ("b" "book notes" plain
+          "\n* source\n\nauthor: %^{author}\ntitle: ${title}\nyear: %^{year}\n\n* summary\n\n%?"
+          :if-new (file+head "%<%y%m%d%h%m%s>-${slug}.org" "#+title: ${title}\n")
+          :unnarrowed t)
+
+        ("h" "homework" entry (file+headline "/mnt/c/Home/orgagenda/homework.org" "homework")
+      "* %? %^l %^g \n%t" :prepend t)
+      ("w" "work" entry (file+headline "/mnt/c/Home/orgagenda/work.org" "work at mtss")
+      "* %?\n%t" :prepend t)
+      ("t" "to do item" entry (file+headline "/mnt/c/Home/orgagenda/i.org" "to do")
+      "* todo %?\n%u" :prepend t)))
+
+; capture templates
+
+          ;; bindings
+
+        :bind (("C-c n l" . org-roam-buffer-toggle)
+               ("C-c n f" . org-roam-node-find)
+               ("C-c n i" . org-roam-node-insert-immediate)
+               :map org-mode-map
+               ("C-S-i" . completion-at-point))
+        :config
+        (org-roam-setup))
+
+(use-package org-roam-ui
+  :straight
+    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :after org-roam
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
 (use-package autothemer
   :straight t)
 
 (use-package gruber-darker-theme
   :straight t)
+
+(recentf-mode 1)
+(setq history-length 25)
+(savehist-mode 1)
+(save-place-mode 1)
+(setq use-dialog-box nil)
+(global-auto-revert-mode 1)
 
 (defun run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
@@ -259,7 +327,7 @@ Use `set-region-read-only' to set this property."
   (interactive (list 
 
   (run-in-vterm "ssh osc@192.168.56.101")
-    (find-file   "/ssh:osc@192.168.56.101:/")
+    (find-file   "/ssh:osc@192.168.56.101:/home/osc/Documents/Labs/")
 
   )))
 
@@ -268,6 +336,47 @@ Use `set-region-read-only' to set this property."
   :lighter center-mode
 
   (recenter-top-bottom))
+
+(defun mk/headerize () "This function adds a default header to all c
+    file in a directory"
+
+      (interactive)
+
+      (let (setq string '"/** Malcolm Kahora\n CSC345-01\n :Lab3 Exercise 1
+          */")
+
+        (setq lst (directory-files-recursively default-directory "\w*.c"))
+
+(mapcar (lambda (f) (append-to-file string)) lst)
+        ))
+
+(add-hook 'c-mode-hook
+          (lambda () (local-set-key (kbd "C-x c") 'compile)))
+
+(setq compile-command "make")
+
+(defun increment-number-at-point ()
+  (interactive)
+  (skip-chars-backward "0-9")
+  (or (looking-at "[0-9]+")
+      (error "No number at point"))
+  (replace-match (number-to-string (1+ (string-to-number (match-string 0))))))
+
+    (global-set-key (kbd "C-c +") 'increment-number-at-point)`
+
+(defun deincrement-number-at-point ()
+  "Decreases a number by one at poiny"
+  (interactive)
+
+  (skip-chars-backward "0-9")
+  (or (looking-at "[0-9]+")
+      (error "No numbers at point"))
+ (replace-match (number-to-string (1- (string-to-number (match-string 0)))))
+
+  )
+
+
+(global-set-key (kbd "C-c -") 'deincrement-number-at-point)
 
 (defun efs/ielm-send-line-or-region ()
   (interactive)
