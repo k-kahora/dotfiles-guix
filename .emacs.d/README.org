@@ -472,8 +472,30 @@ Actually my favorite themes
 
 I uses geiser and geiser scheme
 
+* Modes
+
+#+begin_src emacs-lisp
+
+  (recentf-mode 1)
+  (setq history-length 25)
+  (savehist-mode 1)
+  (save-place-mode 1)
+  (setq use-dialog-box nil)
+  (global-auto-revert-mode 1)
+
+
+#+end_src
 
 * Custom functions
+
+** Load file
+
+#+begin_src emacs-lisp
+
+  (load-file "mk-func/funcs.el")
+
+
+#+end_src
 
 ** Vterm
 
