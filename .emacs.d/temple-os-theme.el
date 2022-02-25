@@ -31,7 +31,7 @@
       (button (:underline t :weight 'bold :foreground temple-98-brown))
    (error  (:foreground temple-light-red))
    (cursor (:background temple-white ))
-   (font-lock-keyword-face (:foreground temple-cyan))
+   (font-lock-keyword-face (:foreground temple-light-red))
    (font-lock-string-face (:foreground temple-green))
 
    
@@ -43,7 +43,7 @@
 
 (header-line (:background temple-blue :foreground temple-white))
 
-(mode-line-buffer-id (:foreground temple-blue :background temple-black :box(:line-width 4 :background temple-blue)))
+(mode-line-buffer-id (:foreground temple-98-brown :background temple-black :box(:color temple-98-brown :line-width 4 :background temple-blue)))
 
 (mode-line (:foreground temple-black :background temple-blue :box (:line-width -4 :color temple-black )))
 
