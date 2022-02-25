@@ -428,6 +428,79 @@ Works well with all the icons
 
     #+end_src
     
+* Org roam
+
+#+begin_src emacs-lisp
+
+
+
+        (use-package org-roam
+          :ensure t
+          :init
+          (setq org-roam-v2-ack t)
+          :custom
+          (org-roam-directory "/mnt/c/Home/roamnotes")
+          (org-roam-completion-everywhere t)
+          (org-roam-capture-templates
+
+           ;; templates
+
+           '(("d" "default" plain
+              "%?"
+              :if-new (file+head "%<%y%m%d%h%m%s>-${slug}.org" "#+title: ${title}\n")
+              :unnarrowed t)
+
+           ("l" "programming language" plain
+            "* characteristics\n\n- family: \n- inspired by: \n\n* reference:\n* examples:%?"
+            :if-new (file+head "%<%y%m%d%h%m%s>-${slug}.org" "#+title: ${title}\n")
+            :unnarrowed t)
+
+           ("b" "book notes" plain
+            "\n* source\n\nauthor: %^{author}\ntitle: ${title}\nyear: %^{year}\n\n* summary\n\n%?"
+            :if-new (file+head "%<%y%m%d%h%m%s>-${slug}.org" "#+title: ${title}\n")
+            :unnarrowed t)
+
+          ("h" "homework" entry (file+headline "/mnt/c/Home/orgagenda/homework.org" "homework")
+        "* %? %^l %^g \n%t" :prepend t)
+        ("w" "work" entry (file+headline "/mnt/c/Home/orgagenda/work.org" "work at mtss")
+        "* %?\n%t" :prepend t)
+        ("t" "to do item" entry (file+headline "/mnt/c/Home/orgagenda/i.org" "to do")
+        "* todo %?\n%u" :prepend t)))
+
+  ; capture templates
+
+            ;; bindings
+
+          :bind (("C-c n l" . org-roam-buffer-toggle)
+                 ("C-c n f" . org-roam-node-find)
+                 ("C-c n i" . org-roam-node-insert-immediate)
+                 :map org-mode-map
+                 ("C-S-i" . completion-at-point))
+          :config
+          (org-roam-setup))
+
+
+#+end_src
+
+** UI
+
+#+begin_src emacs-lisp
+
+  (use-package org-roam-ui
+    :straight
+      (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+      :after org-roam
+  ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+  ;;         a hookable mode anymore, you're advised to pick something yourself
+  ;;         if you don't care about startup time, use
+  ;;  :hook (after-init . org-roam-ui-mode)
+      :config
+      (setq org-roam-ui-sync-theme t
+            org-roam-ui-follow t
+            org-roam-ui-update-on-save t
+            org-roam-ui-open-on-start t))
+  
+#+end_src
 * modus-themes
 
 Actually my favorite themes
