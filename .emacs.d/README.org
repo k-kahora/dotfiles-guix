@@ -96,10 +96,18 @@ Don't know what this does.
 (toggle-truncate-lines nil)
 
    #+end_src
-   
+* Registers
+
+Tjis is for easy file naviagtion.
+
+#+begin_src emacs-lisp
+
+  (set-register ?i (cons 'file "/home/malcolm/.dotfiles/.emacs.d/README.org"))
+  
 
 
-   
+#+end_src
+
 * Packages
 ** All the icons
    #+begin_src emacs-lisp
@@ -119,7 +127,7 @@ Don't know what this does.
 
        :straight t
 
-  
+       
 
        ; replace current window with magit
        :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
