@@ -194,6 +194,16 @@ Adds rich descriptions to functions in minibuffer
 
 #+end_src
 
+**** icons
+
+#+begin_src emacs-lisp
+
+  (use-package all-the-icons-ivy-rich
+  :straight t
+  :init (all-the-icons-ivy-rich-mode 1))
+
+#+end_src
+
 ** Ya-snipper
 
 #+begin_src emacs-lisp
