@@ -59,6 +59,7 @@
 (font-lock-constant-face (:foreground temple-light-purple))
 (font-lock-comment-face (:foreground temple-98-brown))
 
+(org-hide (:foreground temple-black))
 (org-level-1 (:foreground temple-brown))
 (org-level-2 (:foreground temple-cyan))
 (org-level-3 (:foreground temple-purple))

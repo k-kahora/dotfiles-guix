@@ -7,7 +7,7 @@
     (setq string (format "/*****************************************************************************/
 /*                 Malcolm Kahora CSC345-02 Lab %d Exercise %d                 */
 /*****************************************************************************/\n" lab exercise))
-    (setq list (find-file-noselect "*.el" nil nil t))
+    (setq list (find-file-noselect "*.c" nil nil t))
     (dolist (element list)
       (with-current-buffer element (beginning-of-buffer) (insert string))
 
