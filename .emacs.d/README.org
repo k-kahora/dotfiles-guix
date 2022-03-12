@@ -382,14 +382,14 @@ Works well with all the icons
 
 
      (use-package org-bullets
-       :straight t
+       :ensure t
        :hook (org-mode . org-bullets-mode)
        :custom (org-bullets-bullet-list '("♱" "⚉" "⚇" "⚉" "⚇" "⚉" "⚇")))
 
 
    #+end_src
 
-
+/( /rightarrow /)
 
 
 
@@ -543,13 +543,26 @@ Actually my favorite themes
   (display-line-numbers-mode t)
   (setq display-line-numbers 'relative)
 #+end_src
+** minimap
+
+#+begin_src emacs-lisp
+
+
+    (use-package minimap
+      :straight t)
+
+
+#+end_src
+** typewriter
 
 * Themes
 
+** autothemer
 #+begin_src emacs-lisp
 
   (use-package autothemer
     :straight t)
+
 
 #+end_src
 
@@ -562,6 +575,18 @@ Actually my favorite themes
   :straight t)
 
 
+#+end_src
+
+** beacon
+
+#+begin_src emacs-lisp
+
+
+  (straight-use-package 'beacon)
+  ;; (require beacon nil t)
+
+  (beacon-mode 1)
+  
 #+end_src
 
 * Lisp
@@ -590,7 +615,7 @@ I uses geiser and geiser scheme
 
 #+begin_src emacs-lisp
 
-  (load-file "mk-func/funcs.el")
+  (load-file ".emacs.d/mk-func/funcs.el")
 
 
 #+end_src
@@ -720,6 +745,8 @@ Use `set-region-read-only' to set this property."
   (add-hook 'c-mode-hook
             (lambda () (local-set-key (kbd "C-x c") 'compile)))
 
+
+  
   (setq compile-command "make")
 
 #+end_src
@@ -759,6 +786,27 @@ Use `set-region-read-only' to set this property."
 #+end_src
 
   
+* Projectile
+#+begin_src emacs-lisp
+
+
+  (use-package projectile
+    :straight t
+    :diminish projectile-mode
+    :config (projectile-mode)
+    :custom ((projectile-completion-system 'ivy))  ; I uses Ivy there are other options at projectile-completion-system
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+    :init
+    ;; NOTE: Set this to the folder where you keep your Git repos!
+    (when (file-directory-p "/home/malcolm/dev/") ; When this directory exists set the projectile-project-search-path to that value below
+      (setq projectile-project-search-path '("/home/malcolm/dev/")))
+    (setq projectile-switch-project-action #'dired)) 
+
+
+
+#+end_src
+
 * elisp
 System crafters custom elisp reple functions
 
@@ -785,7 +833,7 @@ System crafters custom elisp reple functions
   (ielm)
   (text-scale-set 1))
 
-(define-key org-mode-map (kbd "C-c C-e") 'efs/ielm-send-line-or-region)
+; (define-key org-mode-map (kbd "C-c C-e") 'efs/ielm-send-line-or-region)
 (define-key org-mode-map (kbd "C-c E") 'efs/show-ielm)
   
 #+end_src

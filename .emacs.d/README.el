@@ -81,6 +81,10 @@
   :init
   (ivy-rich-mode 1))
 
+(use-package all-the-icons-ivy-rich
+:straight t
+:init (all-the-icons-ivy-rich-mode 1))
+
 (use-package yasnippet
   :straight t
   :init
@@ -136,7 +140,7 @@
       :hook (after-init . doom-modeline-mode))
 
 (use-package org
-  :ensure t
+  :straight t
   :hook (org-mode . mk/org-mode-setup)
   :config
   (setq org-ellipsis " ▾"
@@ -241,11 +245,19 @@
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
 
+(use-package minimap
+  :straight t)
+
 (use-package autothemer
   :straight t)
 
 (use-package gruber-darker-theme
   :straight t)
+
+(straight-use-package 'beacon)
+;; (require beacon nil t)
+
+(beacon-mode 1)
 
 (recentf-mode 1)
 (setq history-length 25)
@@ -253,6 +265,8 @@
 (save-place-mode 1)
 (setq use-dialog-box nil)
 (global-auto-revert-mode 1)
+
+(load-file ".emacs.d/mk-func/funcs.el")
 
 (defun run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
@@ -337,21 +351,10 @@ Use `set-region-read-only' to set this property."
 
   (recenter-top-bottom))
 
-(defun mk/headerize () "This function adds a default header to all c
-    file in a directory"
-
-      (interactive)
-
-      (let (setq string '"/** Malcolm Kahora\n CSC345-01\n :Lab3 Exercise 1
-          */")
-
-        (setq lst (directory-files-recursively default-directory "\w*.c"))
-
-(mapcar (lambda (f) (append-to-file string)) lst)
-        ))
-
 (add-hook 'c-mode-hook
           (lambda () (local-set-key (kbd "C-x c") 'compile)))
+
+
 
 (setq compile-command "make")
 
@@ -378,6 +381,19 @@ Use `set-region-read-only' to set this property."
 
 (global-set-key (kbd "C-c -") 'deincrement-number-at-point)
 
+(use-package projectile
+  :straight t
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom ((projectile-completion-system 'ivy))  ; I uses Ivy there are other options at projectile-completion-system
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  ;; NOTE: Set this to the folder where you keep your Git repos!
+  (when (file-directory-p "/home/malcolm/dev/") ; When this directory exists set the projectile-project-search-path to that value below
+    (setq projectile-project-search-path '("/home/malcolm/dev/")))
+  (setq projectile-switch-project-action #'dired))
+
 (defun efs/ielm-send-line-or-region ()
   (interactive)
   (unless (use-region-p)
@@ -399,7 +415,7 @@ Use `set-region-read-only' to set this property."
   (ielm)
   (text-scale-set 1))
 
-(define-key org-mode-map (kbd "C-c C-e") 'efs/ielm-send-line-or-region)
+; (define-key org-mode-map (kbd "C-c C-e") 'efs/ielm-send-line-or-region)
 (define-key org-mode-map (kbd "C-c E") 'efs/show-ielm)
 
 (setq ispell-program-name "hunspell")
