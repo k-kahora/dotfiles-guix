@@ -85,6 +85,17 @@
 :straight t
 :init (all-the-icons-ivy-rich-mode 1))
 
+(defvar ivy--identity #'identity
+  "Store the identity state.")
+(advice-add 'ivy--reset-state :before (lambda (&rest r) (setq ivy--identity #'identity)))
+
+(defun ivy-toggle-regexp-quote ()
+  "Toggle the regexp quoting."
+  (interactive)
+  (setq ivy--old-re nil)
+  (cl-rotatef ivy--regex-function ivy--regexp-quote ivy--identity)
+  (setq ivy-regex (funcall ivy--regex-function ivy-text)))
+
 (use-package yasnippet
   :straight t
   :init
@@ -151,6 +162,8 @@
           "/mnt/c/Home/OrgAgenda/birthdays.org"
           "/mnt/c/Home/OrgAgenda/Homework.org"
           "/mnt/c/Home/OrgAgenda/Events.org")))
+
+(setq org-use-speed-commands t)
 
 (defun mk/org-mode-setup ()
   (org-indent-mode)
@@ -245,8 +258,33 @@
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
 
+(display-line-numbers-mode)
+(setq display-line-numbers 'relative)
+
 (use-package minimap
   :straight t)
+
+(use-package tide :straight t)
+
+  (defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 (use-package autothemer
   :straight t)
@@ -381,6 +419,57 @@ Use `set-region-read-only' to set this property."
 
 (global-set-key (kbd "C-c -") 'deincrement-number-at-point)
 
+(use-package hide-mode-line :straight t)
+
+
+(defun efs/presentation-setup ()
+  ;; Hide the mode line
+  (hide-mode-line-mode 1)
+
+  ;; Display images inline
+  (org-display-inline-images) ;; Can also use org-startup-with-inline-images
+
+  ;; Scale the text.  The next line is for basic scaling:
+  (setq text-scale-mode-amount 3)
+  (text-scale-mode 1))
+
+(defun efs/presentation-end ()
+;; Show the mode line again
+(hide-mode-line-mode 0)
+
+;; Turn off text scale mode (or use the next line if you didn't use text-scale-mode)
+(text-scale-mode 0)
+
+;; If you use face-remapping-alist, this clears the scaling:
+(setq-local face-remapping-alist '((default variable-pitch default))))
+
+
+    (use-package org-tree-slide
+      :straight t
+        :hook ((org-tree-slide-play . efs/presentation-setup)
+       (org-tree-slide-stop . efs/presentation-end))
+
+      :custom
+    (org-tree-slide-slide-in-effect nil)
+  (org-tree-slide-activate-message "Presentation started!")
+  (org-tree-slide-deactivate-message "Presentation finished!")
+  (org-tree-slide-header t)
+  (org-tree-slide-breadcrumbs " > ")
+  (org-image-actual-width nil))
+
+(use-package lsp-mode
+:straight t
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (javascript-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+(use-package lsp-ivy :straight t :commands lsp-ivy-workspace-symbol)
+
 (use-package projectile
   :straight t
   :diminish projectile-mode
@@ -393,6 +482,15 @@ Use `set-region-read-only' to set this property."
   (when (file-directory-p "/home/malcolm/dev/") ; When this directory exists set the projectile-project-search-path to that value below
     (setq projectile-project-search-path '("/home/malcolm/dev/")))
   (setq projectile-switch-project-action #'dired))
+
+(use-package web-mode
+  :straight t)
+
+(use-package emmet-mode
+  :straight t)
+
+(add-hook 'css-mode-hook  'emmet-mode)
+(add-hook 'web-mode-hook  'emmet-mode)
 
 (defun efs/ielm-send-line-or-region ()
   (interactive)

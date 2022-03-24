@@ -13,3 +13,6 @@ export PATH=$PATH:$HOME/.dotfiles/bin
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export DICPATH=/usr/share/hunspell/de_DE
+
+alias localhost="python3 -m http.server"
+ 

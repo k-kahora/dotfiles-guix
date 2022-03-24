@@ -9,8 +9,5 @@
 /*****************************************************************************/\n" lab exercise))
     (setq list (find-file-noselect "*.c" nil nil t))
     (dolist (element list)
-      (with-current-buffer element (beginning-of-buffer) (insert string))
+      (with-current-buffer element (beginning-of-buffer) (insert string)))))
 
-      )
-          
-    ))
