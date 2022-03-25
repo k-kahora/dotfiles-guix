@@ -85,7 +85,7 @@
 (magit-branch-local (:foreground temple-purple))
 (magit-branch-remote (:foreground temple-green))
 (magit-hash (:foreground temple-white))
-(region (:background temple-brown ))
+(region (:background temple-brown :foreground temple-white ))
 
 (vertical-border (:background temple-red :foreground temple-white))
 (show-paren-match (:foreground temple-purple ))
