@@ -11,6 +11,8 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(setq package-enable-at-startup nil)
+
 (straight-use-package 'use-package)
 
 (setq straight-use-package-by-default t)
@@ -173,7 +175,7 @@
 (setq org-image-actual-width nil)
 
 (use-package org-bullets
-  :ensure t
+  :straight t
   :hook (org-mode . org-bullets-mode)
   :custom (org-bullets-bullet-list '("♱" "⚉" "⚇" "⚉" "⚇" "⚉" "⚇")))
 
@@ -200,7 +202,7 @@
 (add-to-list 'org-structure-template-alist '("guix" . "src scheme")))
 
 (use-package org-roam
-        :ensure t
+        :straight t
         :init
         (setq org-roam-v2-ack t)
         :custom
