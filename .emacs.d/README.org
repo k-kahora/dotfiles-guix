@@ -869,6 +869,7 @@ Use `set-region-read-only' to set this property."
 
   (use-package hide-mode-line :straight t)
 
+  (global-set-key (kbd "C-c h") 'hide-mode-line-mode)
 
   (defun efs/presentation-setup ()
     ;; Hide the mode line
