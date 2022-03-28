@@ -423,6 +423,7 @@ Use `set-region-read-only' to set this property."
 
 (use-package hide-mode-line :straight t)
 
+(global-set-key (kbd "C-c h") 'hide-mode-line-mode)
 
 (defun efs/presentation-setup ()
   ;; Hide the mode line
@@ -459,18 +460,47 @@ Use `set-region-read-only' to set this property."
   (org-tree-slide-breadcrumbs " > ")
   (org-image-actual-width nil))
 
+(use-package web-mode
+
+
+
+  :straight t
+
+  (use-package web-mode
+    :mode (("\\.html?\\'" . web-mode)
+           ("\\.css\\'"   . web-mode)
+           ("\\.jsx?\\'"  . web-mode)
+           ("\\.tsx?\\'"  . web-mode)
+           ("\\.json\\'"  . web-mode))
+    )
+
 (use-package lsp-mode
 :straight t
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l")
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (javascript-mode . lsp)
+         ((web-mode) . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
 
 (use-package lsp-ivy :straight t :commands lsp-ivy-workspace-symbol)
+
+(use-package company
+  :straight t
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
 
 (use-package projectile
   :straight t
@@ -484,15 +514,6 @@ Use `set-region-read-only' to set this property."
   (when (file-directory-p "/home/malcolm/dev/") ; When this directory exists set the projectile-project-search-path to that value below
     (setq projectile-project-search-path '("/home/malcolm/dev/")))
   (setq projectile-switch-project-action #'dired))
-
-(use-package web-mode
-  :straight t)
-
-(use-package emmet-mode
-  :straight t)
-
-(add-hook 'css-mode-hook  'emmet-mode)
-(add-hook 'web-mode-hook  'emmet-mode)
 
 (defun efs/ielm-send-line-or-region ()
   (interactive)
