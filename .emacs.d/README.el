@@ -266,27 +266,31 @@
 (use-package minimap
   :straight t)
 
-(use-package tide :straight t)
+(use-package tide :straight t
 
-  (defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  ;; company is an optional dependency. You have to
-  ;; install it separately via package-install
-  ;; `M-x package-install [ret] company`
-  (company-mode +1))
+        :init
 
-;; aligns annotation to the right hand side
-(setq company-tooltip-align-annotations t)
+(setq tide-tsserver-executable "~/.nvm/versions/node/v11.12.0/bin/tsserver"))
 
-;; formats the buffer before saving
-(add-hook 'before-save-hook 'tide-format-before-save)
+      (defun setup-tide-mode ()
+      (interactive)
+      (tide-setup)
+      (flycheck-mode +1)
+      (setq flycheck-check-syntax-automatically '(save mode-enabled))
+      (eldoc-mode +1)
+      (tide-hl-identifier-mode +1)
+      ;; company is an optional dependency. You have to
+      ;; install it separately via package-install
+      ;; `M-x package-install [ret] company`
+      (company-mode +1))
 
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
+    ;; aligns annotation to the right hand side
+    (setq company-tooltip-align-annotations t)
+
+    ;; formats the buffer before saving
+    (add-hook 'before-save-hook 'tide-format-before-save)
+
+    (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 (use-package autothemer
   :straight t)
@@ -306,7 +310,7 @@
 (setq use-dialog-box nil)
 (global-auto-revert-mode 1)
 
-(load-file ".emacs.d/mk-func/funcs.el")
+(load-file "/home/malcolm/.dotfiles/.emacs.d/mk-func/funcs.el")
 
 (defun run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
@@ -382,6 +386,9 @@ Use `set-region-read-only' to set this property."
 
   (run-in-vterm "ssh osc@192.168.56.101")
     (find-file   "/ssh:osc@192.168.56.101:/home/osc/Documents/Labs/")
+    (switch-to-buffer "*ssh osc@192.168.56.101*")
+    (rename-buffer "terminal")
+    (switch-to-buffer (other-buffer))
 
   )))
 
@@ -420,6 +427,40 @@ Use `set-region-read-only' to set this property."
 
 
 (global-set-key (kbd "C-c -") 'deincrement-number-at-point)
+
+(eval-after-load "dired"
+  '(define-key dired-mode-map "z" 'dired-zip-files))
+(defun dired-zip-files (zip-file)
+  "Create an archive containing the marked files."
+  (interactive "sEnter name of zip file: ")
+
+  ;; create the zip file
+  (let ((zip-file (if (string-match ".zip$" zip-file) zip-file (concat zip-file ".zip"))))
+    (shell-command 
+     (concat "zip " 
+             zip-file
+             " "
+             (concat-string-list 
+              (mapcar
+               '(lambda (filename)
+                  (file-name-nondirectory filename))
+               (dired-get-marked-files))))))
+
+  (revert-buffer)
+
+  ;; remove the mark on all the files  "*" to " "
+  ;; (dired-change-marks 42 ?\040)
+  ;; mark zip file
+  ;; (dired-mark-files-regexp (filename-to-regexp zip-file))
+  )
+
+(defun concat-string-list (list) 
+   "Return a string which is a concatenation of all elements of the list separated by spaces" 
+    (mapconcat '(lambda (obj) (format "%s" obj)) list " "))
+
+(eval-after-load "dired-aux"
+   '(add-to-list 'dired-compress-file-suffixes 
+                 '("\\.zip\\'" ".zip" "unzip")))
 
 (use-package hide-mode-line :straight t)
 
@@ -461,25 +502,21 @@ Use `set-region-read-only' to set this property."
   (org-image-actual-width nil))
 
 (use-package web-mode
+:straight t  
 
-
-
-  :straight t
-
-  (use-package web-mode
-    :mode (("\\.html?\\'" . web-mode)
-           ("\\.css\\'"   . web-mode)
-           ("\\.jsx?\\'"  . web-mode)
-           ("\\.tsx?\\'"  . web-mode)
-           ("\\.json\\'"  . web-mode))
-    )
+  :mode (("\\.html?\\'" . web-mode)
+         ("\\.css\\'"   . web-mode)
+         ;; ("\\.jsx?\\'"  . web-mode)
+         ("\\.tsx?\\'"  . web-mode)
+         ("\\.json\\'"  . web-mode))
+  )
 
 (use-package lsp-mode
 :straight t
   :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  ;; 
   (setq lsp-keymap-prefix "C-c l")
-  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+  :hook (
          ((web-mode) . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))

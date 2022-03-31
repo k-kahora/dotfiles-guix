@@ -1,4 +1,4 @@
-(defun mk/format-cfiles ( exercise lab )
+(defun mk/format-cfiles (  lab exercise )
     "Adds a header based on the car c code header to all c files - you can also customize which files it does this for"
   (interactive "nEnter a lab: \nnEnter a Exercise: ")
 
