@@ -33,6 +33,8 @@
 
 (toggle-truncate-lines nil)
 
+(setq backup-directory-alist            '((".*" . "~/.Trash")))
+
 (set-register ?i (cons 'file "/home/malcolm/.dotfiles/.emacs.d/README.org"))
 
 (use-package all-the-icons
@@ -88,15 +90,19 @@
 :init (all-the-icons-ivy-rich-mode 1))
 
 (defvar ivy--identity #'identity
-  "Store the identity state.")
-(advice-add 'ivy--reset-state :before (lambda (&rest r) (setq ivy--identity #'identity)))
+    "Store the identity state.")
+  (advice-add 'ivy--reset-state :before (lambda (&rest r) (setq ivy--identity #'identity)))
 
-(defun ivy-toggle-regexp-quote ()
-  "Toggle the regexp quoting."
+(defun mk/ivy-toggle-regexp-quote ()
+    "Toggle the regexp quoting."
+    (interactive)
+    (setq ivy--old-re nil)
+    (cl-rotatef ivy--regex-function ivy--regexp-quote ivy--identity)
+    (setq ivy-regex (funcall ivy--regex-function ivy-text)))
+(defun wow ()
   (interactive)
-  (setq ivy--old-re nil)
-  (cl-rotatef ivy--regex-function ivy--regexp-quote ivy--identity)
-  (setq ivy-regex (funcall ivy--regex-function ivy-text)))
+  (message "wow")
+  )
 
 (use-package yasnippet
   :straight t
@@ -124,6 +130,8 @@
   (setq vterm-max-scrollback 10000))
 
 
+
+(load-file "/home/malcolm/.dotfiles/.emacs.d/mk-func/vundo.el")
 
 (use-package helpful
   :straight t
@@ -163,9 +171,14 @@
         '("/mnt/c/Home/OrgAgenda/tasks.org"
           "/mnt/c/Home/OrgAgenda/birthdays.org"
           "/mnt/c/Home/OrgAgenda/Homework.org"
-          "/mnt/c/Home/OrgAgenda/Events.org")))
+          "/mnt/c/Home/OrgAgenda/Events.org"))
+  :bind
+  ([remap (org-return-and-maybe-indent)] . next-line)
+  )
 
 (setq org-use-speed-commands t)
+; Need to add yeat bell for timer
+(setq org-clock-sound "~/")
 
 (defun mk/org-mode-setup ()
   (org-indent-mode)
@@ -201,6 +214,13 @@
       (add-to-list 'org-structure-template-alist '("oct" . "src octave"))
 (add-to-list 'org-structure-template-alist '("guix" . "src scheme")))
 
+(defun org-roam-node-insert-immediate (arg &rest args)
+(interactive "P")
+(let ((args (cons arg args))
+      (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                '(:immediate-finish t)))))
+  (apply #'org-roam-node-insert args)))
+
 (use-package org-roam
         :straight t
         :init
@@ -219,6 +239,11 @@
 
          ("l" "programming language" plain
           "* characteristics\n\n- family: \n- inspired by: \n\n* reference:\n* examples:%?"
+          :if-new (file+head "%<%y%m%d%h%m%s>-${slug}.org" "#+title: ${title}\n")
+          :unnarrowed t)
+
+         ("p" "python note" plain
+          "\n#+filetags: Python\n* Python"
           :if-new (file+head "%<%y%m%d%h%m%s>-${slug}.org" "#+title: ${title}\n")
           :unnarrowed t)
 
@@ -291,6 +316,25 @@
     (add-hook 'before-save-hook 'tide-format-before-save)
 
     (add-hook 'typescript-mode-hook #'setup-tide-mode)
+
+(use-package python-mode
+  :straight t
+  :hook (python-mode . lsp-deferred)
+  :custom
+  (pythn-shell-interpreter "python3")
+
+
+
+  )
+
+;; (define-key python-mode-map [remap newline] 'next-line)
+
+(define-key python-mode-map (kbd "C-j") 'next-line)
+
+(use-package pyvenv
+  :straight t
+  :config
+  (pyvenv-mode 1))
 
 (use-package autothemer
   :straight t)
@@ -385,7 +429,7 @@ Use `set-region-read-only' to set this property."
   (interactive (list 
 
   (run-in-vterm "ssh osc@192.168.56.101")
-    (find-file   "/ssh:osc@192.168.56.101:/home/osc/Documents/Labs/")
+    (find-file   "/ssh:osc@192.168.56.101:/home/osc/Documents/Projects/Project4/")
     (switch-to-buffer "*ssh osc@192.168.56.101*")
     (rename-buffer "terminal")
     (switch-to-buffer (other-buffer))
@@ -428,6 +472,31 @@ Use `set-region-read-only' to set this property."
 
 (global-set-key (kbd "C-c -") 'deincrement-number-at-point)
 
+(autoload 'copy-from-above-command "misc"
+
+
+
+
+   'interactive)
+
+(global-set-key [up] 'copy-from-above-command)
+
+  (global-set-key [down] (lambda ()
+                         (interactive)
+                         (forward-line 1)
+                         (open-line 1)
+                         (copy-from-above-command)))
+
+(global-set-key [right] (lambda ()
+                          (interactive)
+                          (copy-from-above-command 1)))
+
+ (global-set-key [left] (lambda ()
+                         (interactive)
+                          (copy-from-above-command -1)
+                          (forward-char -1)
+                          (delete-char -1)))
+
 (eval-after-load "dired"
   '(define-key dired-mode-map "z" 'dired-zip-files))
 (defun dired-zip-files (zip-file)
@@ -461,6 +530,16 @@ Use `set-region-read-only' to set this property."
 (eval-after-load "dired-aux"
    '(add-to-list 'dired-compress-file-suffixes 
                  '("\\.zip\\'" ".zip" "unzip")))
+
+(global-set-key (kbd "C-k") 'previous-line)
+
+  (global-set-key (kbd "C-p") 'kill-line)
+  (global-set-key (kbd "C-j") 'next-line)
+  (global-set-key (kbd "C-n") 'electric-newline-and-maybe-indent)
+
+(add-hook 'org-mode-hook
+          (lambda ()
+                  (local-set-key (kbd "C-n") 'org-return-and-maybe-indent)))
 
 (use-package hide-mode-line :straight t)
 
@@ -523,6 +602,21 @@ Use `set-region-read-only' to set this property."
   :commands lsp)
 
 (use-package lsp-ivy :straight t :commands lsp-ivy-workspace-symbol)
+
+(use-package lsp-treemacs
+  :straight t
+  :commands (lsp-treemacs-errors-list))
+
+(eval-after-load "treemacs-mode"
+
+
+    '(define-key treemacs-mode-map [remap treemacs-previous-project] 'treemacs-previous-line)
+
+  )
+(eval-after-load "treemacs-mode"
+  
+  
+  '(define-key treemacs-mode-map [remap treemacs-next-project] 'treemacs-next-line))
 
 (use-package company
   :straight t

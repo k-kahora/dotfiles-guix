@@ -1,4 +1,4 @@
-temple-os theme requires the font from [[https://github.com/rendello/templeos_font][temple-font]] it also requires the autothemer package.  Its the first draft of the theme so their may be color discrepancies 
+Temple-os theme requires the font from [[https://github.com/rendello/templeos_font][temple-font]] it also requires the autothemer package.  Its the first draft of the theme so their may be color discrepancies 
 
 * Straight
 
@@ -108,6 +108,13 @@ Don't know what this does.
 (toggle-truncate-lines nil)
 
    #+end_src
+** trash and backup
+
+#+begin_src emacs-lisp
+
+(setq backup-directory-alist            '((".*" . "~/.Trash")))
+  
+#+end_src
 * Registers
 
 Tjis is for easy file naviagtion.
@@ -229,18 +236,22 @@ Adds rich descriptions to functions in minibuffer
 
 #+begin_src emacs-lisp
 
-(defvar ivy--identity #'identity
-  "Store the identity state.")
-(advice-add 'ivy--reset-state :before (lambda (&rest r) (setq ivy--identity #'identity)))
+    (defvar ivy--identity #'identity
+      "Store the identity state.")
+    (advice-add 'ivy--reset-state :before (lambda (&rest r) (setq ivy--identity #'identity)))
 
-(defun ivy-toggle-regexp-quote ()
-  "Toggle the regexp quoting."
-  (interactive)
-  (setq ivy--old-re nil)
-  (cl-rotatef ivy--regex-function ivy--regexp-quote ivy--identity)
-  (setq ivy-regex (funcall ivy--regex-function ivy-text)))
+  (defun mk/ivy-toggle-regexp-quote ()
+      "Toggle the regexp quoting."
+      (interactive)
+      (setq ivy--old-re nil)
+      (cl-rotatef ivy--regex-function ivy--regexp-quote ivy--identity)
+      (setq ivy-regex (funcall ivy--regex-function ivy-text)))
+  (defun wow ()
+    (interactive)
+    (message "wow")
+    )
 
-  
+
 #+end_src
 
 ** Ya-snipper
@@ -305,6 +316,15 @@ Vterm is faster as its wriiten in C while term is in lisp
 
 
 
+#+end_src
+
+** undo tree
+
+#+begin_src emacs-lisp
+
+
+(load-file "/home/malcolm/.dotfiles/.emacs.d/mk-func/vundo.el")
+  
 #+end_src
 
 * Helpful
@@ -380,9 +400,14 @@ Works well with all the icons
           '("/mnt/c/Home/OrgAgenda/tasks.org"
             "/mnt/c/Home/OrgAgenda/birthdays.org"
             "/mnt/c/Home/OrgAgenda/Homework.org"
-            "/mnt/c/Home/OrgAgenda/Events.org")))
+            "/mnt/c/Home/OrgAgenda/Events.org"))
+    :bind
+    ([remap (org-return-and-maybe-indent)] . next-line)
+    )
 
   (setq org-use-speed-commands t)
+  ; Need to add yeat bell for timer
+  (setq org-clock-sound "~/")
 
 
 
@@ -471,11 +496,26 @@ Works well with all the icons
     
 * Org roam
 
+** custom org roam funcs
+
+#+begin_src emacs-lisp
+
+  (defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+
+#+end_src
+
+** roam
+
 #+begin_src emacs-lisp
 
 
 
-        (use-package org-roam
+  (use-package org-roam
           :straight t
           :init
           (setq org-roam-v2-ack t)
@@ -493,6 +533,11 @@ Works well with all the icons
 
            ("l" "programming language" plain
             "* characteristics\n\n- family: \n- inspired by: \n\n* reference:\n* examples:%?"
+            :if-new (file+head "%<%y%m%d%h%m%s>-${slug}.org" "#+title: ${title}\n")
+            :unnarrowed t)
+
+           ("p" "python note" plain
+            "\n#+filetags: Python\n* Python"
             :if-new (file+head "%<%y%m%d%h%m%s>-${slug}.org" "#+title: ${title}\n")
             :unnarrowed t)
 
@@ -635,6 +680,38 @@ Actually my favorite themes
     (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 #+end_src
+
+** Python
+#+begin_src emacs-lisp
+
+  (use-package python-mode
+    :straight t
+    :hook (python-mode . lsp-deferred)
+    :custom
+    (pythn-shell-interpreter "python3")
+
+
+
+    )
+
+  ;; (define-key python-mode-map [remap newline] 'next-line)
+  
+  (define-key python-mode-map (kbd "C-j") 'next-line)
+
+#+end_src
+
+** pyenv
+
+#+begin_src emacs-lisp
+
+  (use-package pyvenv
+    :straight t
+    :config
+    (pyvenv-mode 1))
+
+#+end_src
+
+** c-programming
 
 * Themes
 
@@ -800,7 +877,7 @@ Use `set-region-read-only' to set this property."
     (interactive (list 
 
     (run-in-vterm "ssh osc@192.168.56.101")
-      (find-file   "/ssh:osc@192.168.56.101:/home/osc/Documents/Labs/")
+      (find-file   "/ssh:osc@192.168.56.101:/home/osc/Documents/Projects/Project4/")
       (switch-to-buffer "*ssh osc@192.168.56.101*")
       (rename-buffer "terminal")
       (switch-to-buffer (other-buffer))
@@ -871,6 +948,36 @@ Use `set-region-read-only' to set this property."
 
 
   
+** copy from above
+
+#+begin_src emacs-lisp
+
+  (autoload 'copy-from-above-command "misc"
+
+
+
+   
+     'interactive)
+
+  (global-set-key [up] 'copy-from-above-command)
+
+    (global-set-key [down] (lambda ()
+                           (interactive)
+                           (forward-line 1)
+                           (open-line 1)
+                           (copy-from-above-command)))
+
+  (global-set-key [right] (lambda ()
+                            (interactive)
+                            (copy-from-above-command 1)))
+
+   (global-set-key [left] (lambda ()
+                           (interactive)
+                            (copy-from-above-command -1)
+                            (forward-char -1)
+                            (delete-char -1)))
+
+#+end_src
 ** Zip
 
 #+begin_src emacs-lisp
@@ -916,6 +1023,24 @@ Use `set-region-read-only' to set this property."
    '(add-to-list 'dired-compress-file-suffixes 
                  '("\\.zip\\'" ".zip" "unzip")))
   
+#+end_src
+
+
+** uo and down line
+
+#+begin_src emacs-lisp
+
+  (global-set-key (kbd "C-k") 'previous-line)
+
+  (global-set-key (kbd "C-p") 'kill-line)
+  (global-set-key (kbd "C-j") 'next-line)
+  (global-set-key (kbd "C-n") 'electric-newline-and-maybe-indent)
+
+(add-hook 'org-mode-hook
+          (lambda ()
+                  (local-set-key (kbd "C-n") 'org-return-and-maybe-indent)))
+
+
 #+end_src
 
 * Presentation
@@ -1012,6 +1137,37 @@ Use `set-region-read-only' to set this property."
 
 #+end_src
 
+** treemacs
+
+#+begin_src emacs-lisp
+
+
+  (use-package lsp-treemacs
+    :straight t
+    :commands (lsp-treemacs-errors-list))
+
+  
+
+  #+end_src
+
+  
+** bindings
+
+#+begin_src emacs-lisp
+
+    (eval-after-load "treemacs-mode"
+
+
+    '(define-key treemacs-mode-map [remap treemacs-previous-project] 'treemacs-previous-line)
+
+  )
+(eval-after-load "treemacs-mode"
+  
+  
+  '(define-key treemacs-mode-map [remap treemacs-next-project] 'treemacs-next-line))
+
+
+#+end_src
 
 * Company mode
 
@@ -1097,3 +1253,39 @@ System crafters custom elisp reple functions
   
 #+end_src
 
+* Email
+
+** mu4e
+
+#+begin_src emacs-lisp :tangle no
+
+  (use-package mu4e
+    :ensure nil
+:load-path "/gnu/store/gr0fx5jkvlyk4nld2bbg2nb5bqbq31j7-profile/bin/mu"
+    :config
+      
+
+  ;; This is set to 't' to avoid mail syncing issues when using mbsync
+  (setq mu4e-change-filenames-when-moving t)
+
+  ;; Refresh mail using isync every 10 minutes
+  (setq mu4e-update-interval (* 10 60))
+  (setq mu4e-get-mail-command "mbsync -a")
+  (setq mu4e-maildir "~/Mail")
+
+  (setq mu4e-drafts-folder "/[Gmail]/Drafts")
+  (setq mu4e-sent-folder   "/[Gmail]/Sent Mail")
+  (setq mu4e-refile-folder "/[Gmail]/All Mail")
+  (setq mu4e-trash-folder  "/[Gmail]/Trash")
+
+  (setq mu4e-maildir-shortcuts
+      '(("/Inbox"             . ?i)
+        ("/[Gmail]/Sent Mail" . ?s)
+        ("/[Gmail]/Trash"     . ?t)
+        ("/[Gmail]/Drafts"    . ?d)
+        ("/[Gmail]/All Mail"  . ?a))))
+
+
+    )
+
+#+end_src
